@@ -47,6 +47,7 @@ public class Main {
              FileOutputStream fout = new FileOutputStream(nowPath + fileName1);
 
              fout.write((word.toString() + "\n\r" + readFile(fileName2)).getBytes());
+             fout.close();
          }
          catch(IOException ex){
              System.out.println(ex.getMessage());
@@ -62,9 +63,9 @@ public class Main {
             while((i = file.read()) != -1){
                 word.append((char)i);
             }
+            file.close();
         }
         catch(IOException ex){
-
             System.out.println(ex.getMessage());
         }
         return word.toString();
@@ -79,6 +80,7 @@ public class Main {
             while((i = file.read()) != -1){
                 System.out.print((char)i);
             }
+            file.close();
         }
         catch(IOException ex){
 
