@@ -2,17 +2,28 @@ package lesson6;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
+
+//    1. Создать 2 текстовых файла, примерно по 50-100 символов в каждом(особого значения не имеет);
+//    2. Написать программу, «склеивающую» эти файлы, то есть вначале идет текст из первого файла, потом текст из второго.
+//    3. Написать программу, которая проверяет присутствует ли указанное пользователем слово (или словосочетание, или предложение) в файле. (Работаем только с латиницей)
+//    4. ** Написать метод, проверяющий, есть ли указанное слово в файлах папки
+
+    private static StringBuilder word = new StringBuilder("");
+    private static String nowPath;
+    private static int i = -1;
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         File file = new File("src/lesson6");
-        String nowPath = file.getAbsolutePath(), fileName1 = "/1.txt";
-        readFile(nowPath, fileName1, "/2.txt");
+        nowPath = file.getAbsolutePath() + "/";
+        String fileName1 = "1.txt";
+        readFile( fileName1, "2.txt");
+        printFile(fileName1);
         System.out.println();
 
         System.out.println("Введите слово (или словосочетание, или предложение), которое надо найти в файле>>  ");
@@ -30,30 +41,56 @@ public class Main {
         }
     }
 
-     private static void readFile(String path, String fileName1, String fileName2){
-        List<String> files = Arrays.asList(path + fileName1, path + fileName2);
-        for (String f : files) {
-             try(FileInputStream file = new FileInputStream(f))
-             {
-                 int i = -1;
-                 while((i = file.read()) != -1){
+     private static void readFile(String fileName1, String fileName2){
+        readFile(fileName1);
+         try {
+             FileOutputStream fout = new FileOutputStream(nowPath + fileName1);
 
-                     System.out.print((char)i);
-                 }
-             }
-             catch(IOException ex){
-
-                 System.out.println(ex.getMessage());
-             }
-             System.out.println();
+             fout.write((word.toString() + "\n\r" + readFile(fileName2)).getBytes());
          }
+         catch(IOException ex){
+             System.out.println(ex.getMessage());
+         }
+         System.out.println();
+    }
+
+    private static String readFile(String fileName1) {
+        word.setLength(0);
+        try(FileInputStream file = new FileInputStream(nowPath + fileName1))
+        {
+            int i = -1;
+            while((i = file.read()) != -1){
+                word.append((char)i);
+            }
+        }
+        catch(IOException ex){
+
+            System.out.println(ex.getMessage());
+        }
+        return word.toString();
+    }
+
+
+    private static void printFile(String fileName1) {
+        System.out.println("Результат файла " + fileName1 + ">>");
+        try(FileInputStream file = new FileInputStream(nowPath + fileName1))
+        {
+            int i = -1;
+            while((i = file.read()) != -1){
+                System.out.print((char)i);
+            }
+        }
+        catch(IOException ex){
+
+            System.out.println(ex.getMessage());
+        }
+        System.out.println();
     }
 
      private static boolean checkWordForFile(String fileName, String findString){
-         StringBuilder word = new StringBuilder("");
          try(FileInputStream file = new FileInputStream(fileName))
          {
-             int i = -1;
+             i = -1;
              while((i = file.read()) != -1){
                 if (i != 13 && i != 10){
                     word.append((char) i);
